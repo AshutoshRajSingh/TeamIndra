@@ -15,9 +15,17 @@ async def get_all_states():
 
 @app.get('/api/states/{state_name}/')
 async def state_entry(state_name: str):
-    time, usage = await asyncio.get_running_loop().run_in_executor(None, data_builder.build_data, state_name)
-    predictions = await asyncio.get_running_loop().run_in_executor(None, model_handler.make_predictions, state_name)
-
+    try:
+        time, usage = await asyncio.get_running_loop().run_in_executor(None, data_builder.build_data, state_name)
+        predictions = await asyncio.get_running_loop().run_in_executor(None, model_handler.make_predictions, state_name)
+    except ValueError as err:
+        return fastapi.responses.JSONResponse(
+            {
+                'data': str(err),
+                'state_name': state_name
+            },
+            status_code=404
+        )
     return {
         'data': {
             'state_name': state_name,

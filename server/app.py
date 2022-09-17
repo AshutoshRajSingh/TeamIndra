@@ -1,6 +1,7 @@
 import asyncio
 import fastapi
 import aiohttp
+import numpy as np
 
 import databuilder, modelhandler, cea, util
 
@@ -40,12 +41,19 @@ async def state_entry(state_name: str):
     
     state_latest_monthly_availability = app.cea_client.state_cache[state_name_cea][-1].energy_availability
 
+    _, usages = data_builder.build_data(state_name)
+    recorded_monthly_energy_usage = util.aggregate_last_month_usage(usages)
+    predicted_monthly_energy_usage = np.sum(predictions) + util.aggregate_last_n_day_usage(usages, 20)
+    
+
     return {
         'data': {
             'state_name': state_name,
             'predictions': predictions.tolist(),
+            'monthly_availability': state_latest_monthly_availability,
+            'recorded_monthly_usage': recorded_monthly_energy_usage,
+            'predicted_monthly_usage': predicted_monthly_energy_usage,
             'timestamps': time.tolist(),
-            'usages': usage.tolist(),
-            'monthly_energy_availability': state_latest_monthly_availability
+            'usages': usage.tolist()
         }
     }

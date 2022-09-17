@@ -1,0 +1,65 @@
+body{
+
+    font-family : 'Montserrat';
+    background-color : white;
+
+}
+
+nav{
+   
+    background-color : #EC7272;
+    font-family : 'Ubuntu';
+    font-weight  :500;
+}
+.navbar-brand{
+    padding-top : 20px;
+    color : white;
+   font-size : 1.8rem;
+   
+}
+
+.hero{
+    background-color : #EC7272;
+    height : 60vh;
+    
+}
+
+.header-text h1{
+  color : white;
+  font-weight : 900; 
+  font-size : 2.7em;
+  margin-top : 100px;
+}
+
+.navbar-brand:hover{
+    
+    color : white;
+}
+
+#myChart{
+
+    background-color : whitesmoke;
+}
+
+.main{
+
+}
+.main  h1{
+    
+    transform : scale(1.2);
+    font-weight  :600;
+}
+
+.subtext{
+    font-size: 1.2rem;
+}
+
+.subtext:hover{
+
+    color : #3FA796;
+}
+
+footer{
+ background-color : whitesmoke;
+ height : 10vh;
+}

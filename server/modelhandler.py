@@ -15,5 +15,11 @@ class ModelHandler:
 
         state_series_x = (state_series_x - self.data_builder.mean) / self.data_builder.std
 
-        pred = self.model.predict(state_series_x)
+        for step_ahead in range(0, 10, 5):
+            pred_5 = self.model.predict(state_series_x[:, step_ahead:])
+            print(pred_5.shape, state_series_x.shape)
+            state_series_x = tf.concat([state_series_x, pred_5], axis=1)
+        
+        pred = state_series_x[:, -10:].numpy().flatten()
+
         return pred * self.data_builder.std + self.data_builder.mean

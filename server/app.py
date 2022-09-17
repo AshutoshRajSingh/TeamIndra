@@ -5,6 +5,8 @@ import numpy as np
 
 import databuilder, modelhandler, cea, util
 
+from starlette.responses import StreamingResponse
+
 app = fastapi.FastAPI()
 
 model_handler = modelhandler.ModelHandler('./models/model.h5')
@@ -54,6 +56,14 @@ async def state_entry(state_name: str):
         20
     )
 
+    app.current_image = await asyncio.get_running_loop().run_in_executor(
+        None,
+        util.generate_plot_image,
+        usage[-20:],
+        predictions,
+        f'Graph for {state_name}'
+    )
+
     prediction_sum = await asyncio.get_event_loop().run_in_executor(
         None, 
         np.sum,
@@ -72,3 +82,8 @@ async def state_entry(state_name: str):
             'usages': usage.tolist()
         }
     }
+
+@app.get('/api/images/current/')
+async def current_image():
+    app.current_image.seek(0)
+    return StreamingResponse(app.current_image, media_type='image/png')

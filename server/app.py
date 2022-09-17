@@ -41,9 +41,8 @@ async def state_entry(state_name: str):
     
     state_latest_monthly_availability = app.cea_client.state_cache[state_name_cea][-1].energy_availability
 
-    _, usages = data_builder.build_data(state_name)
-    recorded_monthly_energy_usage = util.aggregate_last_month_usage(usages)
-    predicted_monthly_energy_usage = np.sum(predictions) + util.aggregate_last_n_day_usage(usages, 20)
+    recorded_monthly_energy_usage = util.aggregate_last_month_usage(usage)
+    predicted_monthly_energy_usage = np.sum(predictions) + util.aggregate_last_n_day_usage(usage, 20)
     
 
     return {

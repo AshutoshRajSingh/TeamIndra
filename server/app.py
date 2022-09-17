@@ -1,12 +1,19 @@
 import asyncio
 import fastapi
+import aiohttp
 
-import databuilder, modelhandler
+import databuilder, modelhandler, cea, util
 
 app = fastapi.FastAPI()
 
 model_handler = modelhandler.ModelHandler('./models/model.h5')
 data_builder = model_handler.data_builder
+
+@app.on_event('startup')
+async def startup_hook():
+    app.session = aiohttp.ClientSession()
+    app.cea_client = cea.CEAClient(app.session)
+    await app.cea_client.populate_cache()
 
 @app.get('/api/states/list/')
 async def get_all_states():
@@ -24,13 +31,21 @@ async def state_entry(state_name: str):
                 'data': str(err),
                 'state_name': state_name
             },
-            status_code=404
+            status_code=404 # the only error that can happen here is a 404 in the event an invalid state was specified
         )
+    if state_name in app.cea_client.state_cache:
+        state_name_cea = state_name
+    else:
+        state_name_cea = util.MANUAL_MAPPING[state_name]
+    
+    state_latest_monthly_availability = app.cea_client.state_cache[state_name_cea][-1].energy_availability
+
     return {
         'data': {
             'state_name': state_name,
             'predictions': predictions.tolist(),
             'timestamps': time.tolist(),
-            'usages': usage.tolist()
+            'usages': usage.tolist(),
+            'monthly_energy_availability': state_latest_monthly_availability
         }
     }

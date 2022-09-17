@@ -41,10 +41,26 @@ async def state_entry(state_name: str):
     
     state_latest_monthly_availability = app.cea_client.state_cache[state_name_cea][-1].energy_availability
 
-    recorded_monthly_energy_usage = util.aggregate_last_month_usage(usage)
-    predicted_monthly_energy_usage = np.sum(predictions) + util.aggregate_last_n_day_usage(usage, 20)
-    
+    recorded_monthly_energy_usage = await asyncio.get_running_loop().run_in_executor(
+        None,
+        util.aggregate_last_month_usage,
+        usage
+    )
 
+    last_20_day_usage = await asyncio.get_running_loop().run_in_executor(
+        None,
+        util.aggregate_last_n_day_usage,
+        usage,
+        20
+    )
+
+    prediction_sum = await asyncio.get_event_loop().run_in_executor(
+        None, 
+        np.sum,
+        predictions
+    )
+    predicted_monthly_energy_usage = last_20_day_usage + prediction_sum
+    
     return {
         'data': {
             'state_name': state_name,

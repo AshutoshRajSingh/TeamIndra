@@ -61,7 +61,7 @@ async def state_entry(request: fastapi.Request, state_name: str):
         None,
         util.aggregate_last_n_day_usage,
         usage,
-        20
+        30
     )
 
     app.current_image = await asyncio.get_running_loop().run_in_executor(

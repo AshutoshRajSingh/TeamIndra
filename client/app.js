@@ -38,13 +38,13 @@ app.post("/", function(req,res){
         if (surplus>=0){
             styles = {
                 color : "green",
-                message : "You're good to go 💡" 
+                message : "Analysis : You're good to go 💡" 
             }
         }
         else{
             styles = {
                 color : "red",
-                message : "Oh oh. Looks like your state is about to run out of electricity 😞"
+                message : "Analysis : Oh oh. Looks like your state is about to run out of electricity 😞"
             }
         }
         res.render("results",{"state": state,"apiData":apiData,"labels":labels,"styles" : styles , "surplus":surplus});

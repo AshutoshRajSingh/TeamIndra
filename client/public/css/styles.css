@@ -63,3 +63,11 @@ footer{
  background-color : whitesmoke;
  height : 10vh;
 }
+
+.graph{
+
+   
+    height : 1000px ;
+    width : 1000px;
+    padding : 10%;
+}

@@ -1,1 +1,96 @@
-<h1><%= state %></h1>
+<%- include("partials/header.ejs") %>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+<script>
+
+        
+const labels = "<%= labels.slice(-30) %>".split(',')
+  
+var data1 =[]
+var data2 = []
+
+for(var i=0;i<20;i++){
+    data1.push({x:labels[i],y: [<%= apiData.data.usages.splice(-20) %>][i] });
+}
+
+data2.push(data1[19]);
+for(var i=21;i<30;i++){
+    data2.push({x:labels[i],y: [<%= apiData.data.predictions %>][i-20] });
+}
+
+
+console.log(data1);
+ console.log(data2);
+  const data = {
+    labels: labels,
+    datasets: [
+    {
+      label: 'Power Usage',
+      backgroundColor: 'blue',
+      borderColor: 'blue',
+      data: data1,
+    },    
+    {
+      label: 'Power Consumption Predictions',
+      backgroundColor: 'rgb(255, 99, 132)',
+      borderColor: 'rgb(255, 99, 132)',
+      data: data2,
+    },
+   ]
+  };
+
+
+
+  const config = {
+    type: 'line',
+    data: data,
+    options: {
+
+    //   scales :{
+    //     x:{
+    //         type : "time",
+    //         time : {
+    //             unit : "day"
+    //         }
+    //     },
+    //   }
+    }
+  };
+  
+  
+
+  
+</script>
+
+<section class="text-center">
+
+    <h1 class="mt-5 text-center">Electricity usage trends for <%= state %></h1>
+
+
+
+<div class="graph" id="graph">
+    <canvas id="myChart"></canvas>
+</div>
+</section>
+
+    
+
+
+ 
+
+
+<script>
+
+
+
+    const myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+
+
+  </script>
+  
+<%- include("partials/footer.ejs") %>

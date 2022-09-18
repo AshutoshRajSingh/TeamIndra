@@ -67,16 +67,24 @@ console.log(data1);
 <section class="text-center">
 
     <h1 class="mt-5 text-center">Electricity usage trends for <%= state %></h1>
-
+    
+    <h3 class="mt-3 ali"style="color : <%=styles.color %>"><%= styles.message %></h3>
 
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-10">
         <div class="graph text-center" id="graph">
-            <canvas id="myChart"></canvas>
+            <canvas id="myChart"></canvas> <br> <br>
+            <div class="info">
+              <span class="info-items">Monthly availability : <%= apiData.data.monthly_availability %></span>
+              <span class="info-items">Recorded Monthly Usage : <%= apiData.data.recorded_monthly_usage %></span>
+              <span class="info-items">Predicted Monthly Usage : <%= apiData.data.predicted_monthly_usage %></span>
+              <span class="info-items" style="color : <%= styles.color %>"> Surplus : <%= surplus %> </span>
+            </div>
         </div>
     </div>
 </div>
+
 
 </section>
 

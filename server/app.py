@@ -9,7 +9,7 @@ from starlette.responses import StreamingResponse
 
 app = fastapi.FastAPI()
 
-model_handler = modelhandler.ModelHandler('./models/model.h5')
+model_handler = modelhandler.ModelHandler('./models/model_1.1.h5')
 data_builder = model_handler.data_builder
 
 @app.on_event('startup')
@@ -23,11 +23,16 @@ async def get_all_states():
     return {'state_list': databuilder.STATE_LIST}
 
 
-@app.get('/api/states/{state_name}/')
-async def state_entry(state_name: str):
+@app.get('/api/states/{state_name}')
+async def state_entry(request: fastapi.Request, state_name: str):
+
+    
+    n_past = int(request.query_params.get('n_past')) if request.query_params.get('n_past') else 500
+    n_future = int(request.query_params.get('n_future')) if request.query_params.get('n_future') else 2
+
     try:
-        time, usage = await asyncio.get_running_loop().run_in_executor(None, data_builder.build_data, state_name)
-        predictions = await asyncio.get_running_loop().run_in_executor(None, model_handler.make_predictions, state_name)
+        time, usage = await asyncio.get_running_loop().run_in_executor(None, data_builder.build_data, state_name, n_past)
+        predictions = await asyncio.get_running_loop().run_in_executor(None, model_handler.make_predictions, state_name, n_future)
     except ValueError as err:
         return fastapi.responses.JSONResponse(
             {

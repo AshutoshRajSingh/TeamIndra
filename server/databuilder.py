@@ -26,7 +26,7 @@ class DataBuilder:
 
         self.grouped = self.df.groupby(self.df['States'])
 
-    def build_data(self, state_name):
+    def build_data(self, state_name, n_past=50):
         if state_name not in STATE_LIST:
             raise ValueError('Invalid State provided')
 
@@ -37,4 +37,4 @@ class DataBuilder:
 
         assert(time.is_monotonic)
 
-        return time.to_numpy(), usage.to_numpy()
+        return time.to_numpy()[-n_past:], usage.to_numpy()[-n_past:]

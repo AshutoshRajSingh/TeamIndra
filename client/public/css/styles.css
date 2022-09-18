@@ -69,5 +69,11 @@ footer{
     
     height : 1200px ;
     width : 1200px;
-    padding : 10%;
+    padding-top : 5%;
+    padding-bottom  : 0%;
+}
+
+.info-items{
+ 
+    margin-right : 10px;
 }

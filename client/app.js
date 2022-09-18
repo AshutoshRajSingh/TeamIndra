@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const http = require("http");
+const axios = require("axios");
 
 const app = express();
 
@@ -22,16 +23,24 @@ function getData(state){
 
     const url = "http://localhost:8000/api/states/"+state+"/";
 
-    http.get(url,function(response){
+    // http.get(url,function(response){
         
        
-        response.on("data",function(data){
+    //     response.on("data",function(data){
 
-            apiData = JSON.parse(data);
-        });
+    //         apiData = JSON.parse(data);
+    //     });
 
         
-    });
+    // });
+
+    axios
+    .get(url)
+    .then(response =>{
+        apiData = response.data;
+    })
+
+    console.log(apiData);
 
     
   

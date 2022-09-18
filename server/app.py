@@ -76,7 +76,7 @@ async def state_entry(request: fastapi.Request, state_name: str):
     )
     predicted_monthly_energy_usage = last_20_day_usage + prediction_sum
     
-    return {
+    body = {
         'data': {
             'state_name': state_name,
             'predictions': predictions.tolist(),
@@ -87,6 +87,12 @@ async def state_entry(request: fastapi.Request, state_name: str):
             'usages': usage.tolist()
         }
     }
+    return fastapi.responses.JSONResponse(
+        body,
+        headers = {
+            'Access-Control-Allow-Origin': '*'
+        }
+    )
 
 @app.get('/api/images/current/')
 async def current_image():

@@ -32,6 +32,8 @@ async def state_entry(request: fastapi.Request, state_name: str):
 
     try:
         time, usage = await asyncio.get_running_loop().run_in_executor(None, data_builder.build_data, state_name, n_past)
+        time = time[:365]
+        usage = usage[:365]
         predictions = await asyncio.get_running_loop().run_in_executor(None, model_handler.make_predictions, state_name, n_future)
     except ValueError as err:
         return fastapi.responses.JSONResponse(
@@ -41,6 +43,7 @@ async def state_entry(request: fastapi.Request, state_name: str):
             },
             status_code=404 # the only error that can happen here is a 404 in the event an invalid state was specified
         )
+    
     if state_name in app.cea_client.state_cache:
         state_name_cea = state_name
     else:
